@@ -58,14 +58,26 @@ above, and on the host via its environment settings.
 
 ## Deploying
 
-This app keeps bookings in a SQLite file on disk, so it needs a host that gives
-it a **long-running process and persistent storage** — Railway, Render, Fly.io,
-or a VPS. It will **not** work on serverless platforms such as Vercel or Netlify
-Functions: their filesystems are read-only apart from a temporary directory that
-is wiped between invocations, so bookings would be lost. Moving to one of those
-would mean replacing SQLite with a hosted database first.
+This app keeps bookings in a SQLite file on disk, so for real use it needs a host
+that gives it a **long-running process and persistent storage** — Railway,
+Render, Fly.io, or a VPS.
 
-### Railway (recommended)
+### Vercel (demo only — bookings are NOT saved)
+
+Vercel runs this as a serverless function, where the only writable location is
+`/tmp`, which is per-instance and wiped when the instance recycles. The site
+deploys and the whole booking flow works end to end, which makes it fine for
+showing the product — but **any booking taken there will be lost**, and two
+visitors can land on different instances and see different data.
+
+`GET /api/status` returns `{"ephemeral": true}` whenever storage is throwaway,
+so you can always tell which mode a deployment is in. To take real bookings,
+use the Railway setup below or swap SQLite for a hosted database (Turso, Neon).
+
+Set `ADMIN_KEY` in the Vercel project's environment settings to unlock `/admin`;
+without it the site runs normally and the dashboard returns 503.
+
+### Railway (recommended — real bookings)
 
 ```bash
 railway init

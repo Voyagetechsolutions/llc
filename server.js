@@ -8,21 +8,21 @@ import crypto from "node:crypto";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8765;
 
+// Serverless hosts (Vercel) give us a read-only bundle and a scratch /tmp that
+// is wiped between invocations. Good enough to demo the flow, useless as a
+// record of real bookings — see EPHEMERAL below.
+const SERVERLESS = Boolean(process.env.VERCEL);
+
+// There is deliberately no fallback key: a default committed here would be
+// public. Without ADMIN_KEY the site still runs, but /admin stays locked.
 const ADMIN_KEY = process.env.ADMIN_KEY;
-if (!ADMIN_KEY) {
-  console.error(
-    "ADMIN_KEY is not set. Refusing to start so the admin dashboard is never\n" +
-      "left open with a publicly known key.\n\n" +
-      "  Local:   $env:ADMIN_KEY = \"your-secret-key\"; npm start\n" +
-      "  Railway: railway variables --set ADMIN_KEY=your-secret-key\n"
-  );
-  process.exit(1);
-}
 
 // ===== Database =====
 // DB_PATH lets the host point this at a persistent volume (Railway mounts one
 // at /data). The default keeps local development working with no config.
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, "data", "bookings.db");
+const DB_PATH =
+  process.env.DB_PATH || (SERVERLESS ? "/tmp/bookings.db" : path.join(__dirname, "data", "bookings.db"));
+const EPHEMERAL = DB_PATH.startsWith("/tmp");
 fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 const db = new DatabaseSync(DB_PATH);
 
@@ -57,6 +57,9 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 function requireAdmin(req, res, next) {
+  if (!ADMIN_KEY) {
+    return res.status(503).json({ error: "Admin dashboard is disabled. Set ADMIN_KEY on the host to enable it." });
+  }
   if (req.get("x-admin-key") !== ADMIN_KEY) {
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -136,8 +139,29 @@ app.get("/admin", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "admin.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`Lazarus Luxury Coaches running on port ${PORT}`);
-  console.log(`Bookings database: ${DB_PATH}`);
-  console.log(`Admin dashboard: /admin (sign in with your ADMIN_KEY)`);
+// Tells the front end when it is running against throwaway storage.
+app.get("/api/status", (req, res) => {
+  res.json({ ok: true, ephemeral: EPHEMERAL, adminEnabled: Boolean(ADMIN_KEY) });
 });
+
+if (EPHEMERAL) {
+  console.warn(
+    "DEMO MODE: bookings are stored in /tmp and will be lost when the instance\n" +
+      "recycles. Do not take real bookings here — set DB_PATH to a persistent\n" +
+      "volume (or move to a host that has one) before going live."
+  );
+}
+if (!ADMIN_KEY) {
+  console.warn("ADMIN_KEY is not set — /admin is disabled until you set it on the host.");
+}
+
+// Serverless hosts import the app and handle listening themselves.
+if (!SERVERLESS) {
+  app.listen(PORT, () => {
+    console.log(`Lazarus Luxury Coaches running on port ${PORT}`);
+    console.log(`Bookings database: ${DB_PATH}`);
+    console.log(`Admin dashboard: /admin (sign in with your ADMIN_KEY)`);
+  });
+}
+
+export default app;
