@@ -1,15 +1,30 @@
 import express from "express";
 import { DatabaseSync } from "node:sqlite";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import crypto from "node:crypto";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8765;
-const ADMIN_KEY = process.env.ADMIN_KEY || "lazarus-admin-2026";
+
+const ADMIN_KEY = process.env.ADMIN_KEY;
+if (!ADMIN_KEY) {
+  console.error(
+    "ADMIN_KEY is not set. Refusing to start so the admin dashboard is never\n" +
+      "left open with a publicly known key.\n\n" +
+      "  Local:   $env:ADMIN_KEY = \"your-secret-key\"; npm start\n" +
+      "  Railway: railway variables --set ADMIN_KEY=your-secret-key\n"
+  );
+  process.exit(1);
+}
 
 // ===== Database =====
-const db = new DatabaseSync(path.join(__dirname, "data", "bookings.db"));
+// DB_PATH lets the host point this at a persistent volume (Railway mounts one
+// at /data). The default keeps local development working with no config.
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, "data", "bookings.db");
+fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+const db = new DatabaseSync(DB_PATH);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS bookings (
@@ -122,6 +137,7 @@ app.get("/admin", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Lazarus Luxury Coaches running at http://localhost:${PORT}`);
-  console.log(`Admin dashboard: http://localhost:${PORT}/admin (key: ${ADMIN_KEY})`);
+  console.log(`Lazarus Luxury Coaches running on port ${PORT}`);
+  console.log(`Bookings database: ${DB_PATH}`);
+  console.log(`Admin dashboard: /admin (sign in with your ADMIN_KEY)`);
 });

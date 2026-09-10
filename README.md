@@ -5,9 +5,9 @@ the daily Johannesburg ⇄ Bulawayo luxury coach service.
 
 ## Run it
 
-```
+```powershell
 npm install
-npm start
+$env:ADMIN_KEY = "your-secret-key"; npm start
 ```
 
 Then open:
@@ -17,13 +17,18 @@ Then open:
 
 ## Admin access
 
-The default admin key is `lazarus-admin-2026`.
+There is no default admin key. The server **refuses to start** unless `ADMIN_KEY`
+is set, so the dashboard can never be left open with a key that is published in
+this repository. Pick your own value and set it in the environment — locally as
+above, and on the host via its environment settings.
 
-**Change it before going live** by setting the `ADMIN_KEY` environment variable:
+## Configuration
 
-```powershell
-$env:ADMIN_KEY = "your-secret-key"; npm start
-```
+| Variable | Required | Default | Purpose |
+| --- | --- | --- | --- |
+| `ADMIN_KEY` | **yes** | — | Key for the `/admin` dashboard and admin API |
+| `DB_PATH` | no | `./data/bookings.db` | Where the SQLite database lives — point this at a persistent volume in production |
+| `PORT` | no | `8765` | Port to listen on (hosts usually set this for you) |
 
 ## How bookings work
 
@@ -38,7 +43,7 @@ $env:ADMIN_KEY = "your-secret-key"; npm start
 
 ## Tech
 
-- **Backend:** Node.js (>= 22.5) + Express + built-in `node:sqlite` — no native
+- **Backend:** Node.js (>= 24) + Express + built-in `node:sqlite` — no native
   build tools needed.
 - **Frontend:** static HTML/CSS/JS in `public/` — no framework, loads fast.
 - **Database:** `data/bookings.db` (SQLite). Back this file up regularly.
@@ -53,9 +58,24 @@ $env:ADMIN_KEY = "your-secret-key"; npm start
 
 ## Deploying
 
-Any Node host works (Railway, Render, a VPS, etc.):
+This app keeps bookings in a SQLite file on disk, so it needs a host that gives
+it a **long-running process and persistent storage** — Railway, Render, Fly.io,
+or a VPS. It will **not** work on serverless platforms such as Vercel or Netlify
+Functions: their filesystems are read-only apart from a temporary directory that
+is wiped between invocations, so bookings would be lost. Moving to one of those
+would mean replacing SQLite with a hosted database first.
 
-1. Upload the project (or push to GitHub and connect the host).
-2. Set `ADMIN_KEY` (and optionally `PORT`) in the host's environment settings.
-3. Ensure the `data/` folder is on persistent storage so bookings survive restarts.
-4. Point the `lazarusluxurycoaches.co.za` domain at the host.
+### Railway (recommended)
+
+```bash
+railway init
+railway volume add --mount-path /data
+railway variables --set ADMIN_KEY=your-secret-key --set DB_PATH=/data/bookings.db
+railway up
+```
+
+The volume is what makes bookings survive restarts and redeploys; `DB_PATH`
+points the database at it. Railway supplies `PORT` automatically.
+
+Finally, point the `lazarusluxurycoaches.co.za` domain at the host and **back up
+the database file regularly** — it is the only copy of your bookings.
