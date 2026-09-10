@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# SQLite booking database — contains real passenger details, never commit
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+# Environment / secrets
+.env
+.env.*
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store

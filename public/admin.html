@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Lazarus Luxury Coaches</title>
+  <meta name="robots" content="noindex">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <style>
+    :root {
+      --navy-900: #0b1320; --navy-800: #101a2e; --gold: #c9a14d; --gold-light: #e0c279;
+      --text: #1c2536; --muted: #5b6678; --surface-alt: #f6f4ef;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "Inter", sans-serif; background: var(--surface-alt); color: var(--text); min-height: 100vh; }
+    .wrap { width: min(1100px, 94%); margin: 0 auto; padding: 2rem 0 4rem; }
+    header.bar {
+      background: var(--navy-900); padding: 0.9rem 0;
+      border-bottom: 2px solid var(--gold);
+    }
+    .bar-inner { width: min(1100px, 94%); margin: 0 auto; display: flex; align-items: center; gap: 0.8rem; }
+    .bar-inner img { width: 42px; height: 42px; object-fit: contain; }
+    .bar-inner strong { font-family: "Cormorant Garamond", serif; color: #fff; font-size: 1.3rem; }
+    .bar-inner span { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; display: block; }
+    .bar-inner button { margin-left: auto; }
+
+    h1 { font-family: "Cormorant Garamond", serif; font-size: 2rem; margin-bottom: 1.2rem; }
+
+    /* Login */
+    .login-card {
+      max-width: 400px; margin: 4rem auto; background: #fff; border-radius: 16px;
+      padding: 2.2rem; box-shadow: 0 16px 40px rgba(11,19,32,0.12); border-top: 4px solid var(--gold);
+      text-align: center;
+    }
+    .login-card img { width: 70px; margin: 0 auto 1rem; }
+    .login-card h1 { margin-bottom: 0.4rem; }
+    .login-card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.4rem; }
+    input[type="password"] {
+      width: 100%; padding: 0.75rem 0.9rem; border: 1.5px solid #d9d4c7; border-radius: 10px;
+      font-size: 0.95rem; margin-bottom: 1rem; background: #fcfbf8;
+    }
+    input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,161,77,0.2); }
+    .btn {
+      display: inline-block; width: 100%; padding: 0.8rem; border: 0; border-radius: 999px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--navy-900);
+      font-weight: 700; font-size: 0.95rem; cursor: pointer; font-family: "Inter", sans-serif;
+    }
+    .err { color: #a33b32; font-size: 0.85rem; margin-bottom: 0.8rem; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.8rem; }
+    .stat { background: #fff; border-radius: 14px; padding: 1.1rem 1.3rem; box-shadow: 0 4px 14px rgba(11,19,32,0.07); }
+    .stat strong { font-family: "Cormorant Garamond", serif; font-size: 1.9rem; display: block; color: var(--navy-800); }
+    .stat span { font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+    /* Table */
+    .table-wrap { background: #fff; border-radius: 14px; overflow-x: auto; box-shadow: 0 4px 14px rgba(11,19,32,0.07); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 880px; }
+    th { text-align: left; padding: 0.85rem 1rem; background: var(--navy-900); color: var(--gold-light); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; }
+    td { padding: 0.8rem 1rem; border-top: 1px solid #eee9dd; vertical-align: top; }
+    tr:hover td { background: #faf8f2; }
+    .ref { font-weight: 700; color: var(--navy-800); white-space: nowrap; }
+    .pill { display: inline-block; padding: 0.18rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+    .pill.pending { background: #fdf3dd; color: #8a6516; }
+    .pill.confirmed { background: #e2f6e9; color: #1e7d43; }
+    .pill.cancelled { background: #fdeae8; color: #a33b32; }
+    .actions button {
+      border: 1px solid #d9d4c7; background: #fff; border-radius: 8px; padding: 0.3rem 0.7rem;
+      font-size: 0.76rem; cursor: pointer; margin-right: 0.35rem; font-family: "Inter", sans-serif;
+    }
+    .actions button:hover { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
+    .empty { text-align: center; padding: 3rem; color: var(--muted); }
+    .logout { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: 999px; padding: 0.45rem 1.1rem; font-size: 0.8rem; cursor: pointer; }
+    .logout:hover { border-color: var(--gold); color: var(--gold-light); }
+    a.wa { color: #1e7d43; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <header class="bar">
+    <div class="bar-inner">
+      <img src="assets/logo.png" alt="">
+      <div><strong>Lazarus Luxury Coaches</strong><span>Admin · Bookings</span></div>
+      <button class="logout" id="logoutBtn" hidden>Log out</button>
+    </div>
+  </header>
+
+  <!-- Login view -->
+  <div class="login-card" id="loginView">
+    <img src="assets/logo.png" alt="LLC">
+    <h1>Admin access</h1>
+    <p>Enter your admin key to manage bookings.</p>
+    <p class="err" id="loginErr" hidden>Invalid admin key.</p>
+    <input type="password" id="adminKey" placeholder="Admin key" autocomplete="current-password">
+    <button class="btn" id="loginBtn">Sign in</button>
+  </div>
+
+  <!-- Dashboard view -->
+  <div class="wrap" id="dashView" hidden>
+    <h1>Booking requests</h1>
+    <div class="stats">
+      <div class="stat"><strong id="statTotal">0</strong><span>Total</span></div>
+      <div class="stat"><strong id="statPending">0</strong><span>Pending</span></div>
+      <div class="stat"><strong id="statConfirmed">0</strong><span>Confirmed</span></div>
+      <div class="stat"><strong id="statSeats">0</strong><span>Seats booked</span></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Reference</th><th>Passenger</th><th>Phone</th><th>Route</th>
+            <th>Date</th><th>Seats</th><th>Notes</th><th>Status</th><th>Received</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="empty" id="emptyMsg" hidden>No bookings yet.</div>
+    </div>
+  </div>
+
+  <script>
+    const loginView = document.getElementById("loginView");
+    const dashView = document.getElementById("dashView");
+    const logoutBtn = document.getElementById("logoutBtn");
+    let key = sessionStorage.getItem("llc_admin_key") || "";
+
+    async function fetchBookings() {
+      const res = await fetch("/api/bookings", { headers: { "x-admin-key": key } });
+      if (res.status === 401) return null;
+      return res.json();
+    }
+
+    function render(bookings) {
+      loginView.hidden = true;
+      dashView.hidden = false;
+      logoutBtn.hidden = false;
+
+      document.getElementById("statTotal").textContent = bookings.length;
+      document.getElementById("statPending").textContent = bookings.filter(b => b.status === "pending").length;
+      document.getElementById("statConfirmed").textContent = bookings.filter(b => b.status === "confirmed").length;
+      document.getElementById("statSeats").textContent = bookings
+        .filter(b => b.status !== "cancelled")
+        .reduce((sum, b) => sum + b.seats, 0);
+
+      const rows = document.getElementById("rows");
+      rows.innerHTML = "";
+      document.getElementById("emptyMsg").hidden = bookings.length > 0;
+
+      for (const b of bookings) {
+        const tr = document.createElement("tr");
+        const waPhone = b.phone.replace(/\D/g, "");
+        tr.innerHTML = `
+          <td class="ref">${b.reference}</td>
+          <td>${esc(b.full_name)}</td>
+          <td><a class="wa" href="https://wa.me/${waPhone}" target="_blank" rel="noopener">${esc(b.phone)}</a></td>
+          <td>${esc(b.routeLabel)}</td>
+          <td>${b.travel_date}</td>
+          <td>${b.seats}</td>
+          <td>${esc(b.notes || "—")}</td>
+          <td><span class="pill ${b.status}">${b.status}</span></td>
+          <td>${b.created_at.slice(0, 16)}</td>
+          <td class="actions">
+            ${b.status !== "confirmed" ? `<button data-id="${b.id}" data-status="confirmed">Confirm</button>` : ""}
+            ${b.status !== "cancelled" ? `<button data-id="${b.id}" data-status="cancelled">Cancel</button>` : ""}
+            ${b.status !== "pending" ? `<button data-id="${b.id}" data-status="pending">Pending</button>` : ""}
+          </td>`;
+        rows.appendChild(tr);
+      }
+
+      rows.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          await fetch(`/api/bookings/${btn.dataset.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "x-admin-key": key },
+            body: JSON.stringify({ status: btn.dataset.status }),
+          });
+          load();
+        });
+      });
+    }
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    async function load() {
+      if (!key) return;
+      const bookings = await fetchBookings();
+      if (bookings === null) {
+        sessionStorage.removeItem("llc_admin_key");
+        key = "";
+        document.getElementById("loginErr").hidden = false;
+        loginView.hidden = false;
+        dashView.hidden = true;
+        logoutBtn.hidden = true;
+        return;
+      }
+      render(bookings);
+    }
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      key = document.getElementById("adminKey").value.trim();
+      sessionStorage.setItem("llc_admin_key", key);
+      load();
+    });
+    document.getElementById("adminKey").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") document.getElementById("loginBtn").click();
+    });
+    logoutBtn.addEventListener("click", () => {
+      sessionStorage.removeItem("llc_admin_key");
+      location.reload();
+    });
+
+    load();
+  </script>
+</body>
+</html>

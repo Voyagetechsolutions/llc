@@ -1,0 +1,16 @@
+{
+  "name": "lazarus-luxury-coaches",
+  "version": "1.0.0",
+  "description": "Website and booking system for Lazarus Luxury Coaches (LLC)",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
