@@ -1,52 +1,92 @@
-# Lazarus Luxury Coaches — Website & Booking System
+# Lazarus Luxury Coaches — Website
 
-Premium website with a real booking backend for Lazarus Luxury Coaches (LLC),
-the daily Johannesburg ⇄ Bulawayo luxury coach service.
+Marketing and online booking website for Lazarus Luxury Coaches (LLC), the daily
+Johannesburg ⇄ Bulawayo luxury coach service.
 
-## Run it
+The website keeps no bookings of its own. Trips, fares, seat plans, availability,
+bookings, payments and tickets all live in **VTTS**, the bus management system.
+The booking card on the homepage is a sales channel into VTTS through its public
+channel API, so a seat sold online, at the counter or through a reseller comes
+out of the same inventory and cannot be sold twice.
+
+## How online booking works
+
+1. The page loads `/api/config` from this server to learn the VTTS API address
+   and the website's publishable channel key.
+2. The browser then calls VTTS directly:
+   - `GET /channel-api/v1/catalog` — published departures, fares, booking policy
+     and payment methods.
+   - `GET /channel-api/v1/trips/:tripId/availability` — the live seat map.
+   - `POST /channel-api/v1/seat-holds` — holds the chosen seat for the operator's
+     hold window (five minutes by default), shown to the customer as a countdown.
+   - `POST /channel-api/v1/bookings` — creates the pending booking and payment
+     checkout against that hold.
+3. The customer receives a VTTS booking reference and, when the payment provider
+   returns one, a secure payment link. VTTS confirms the booking and issues the
+   ticket only after the provider reports the payment.
+
+Staff manage trips, seat plans, fares, bookings and check-in in VTTS. If VTTS is
+not configured or cannot be reached, the booking card switches to WhatsApp and
+phone booking and writes the technical reason to the browser console.
+
+Each online booking is for one seat, because VTTS holds and charges every seat
+individually. Groups book one seat at a time or through WhatsApp.
+
+## Connecting the website to VTTS
+
+In VTTS, signed in as a Lazarus company administrator:
+
+1. **Company settings** — turn on public booking. The catalog is refused until
+   this is enabled.
+2. **Routes and trips** — set up Johannesburg → Bulawayo and
+   Bulawayo → Johannesburg and publish departures on a bus that has a seat
+   layout. Trips on a bus without a seat layout are not offered online.
+3. **Payment providers** — add and activate at least one. Without one, customers
+   can choose a seat but cannot check out.
+4. **Channels** — create a `WEBSITE` channel, activate it, and issue a
+   `PUBLISHABLE` credential whose allowed origins include every address the site
+   is served from, for example `https://llc-umber.vercel.app`,
+   `https://lazarusluxurycoaches.co.za` and `http://localhost:8765`. The key is
+   shown only once.
+
+Then set these on the website host:
+
+| Variable | Example | Purpose |
+| --- | --- | --- |
+| `VTTS_API_URL` | `https://dvfyf668filek.cloudfront.net/api/v1` | VTTS API base, including `/api/v1` |
+| `VTTS_CHANNEL_KEY` | `ch_…` | The publishable website credential |
+| `PORT` | `8765` | Local port; hosts usually set this |
+
+A publishable key is meant to reach the browser: VTTS accepts it only from the
+allowed origins, and it can only read the published catalog and create holds and
+bookings. It is set per environment rather than committed so it can be rotated
+or revoked without a code change.
+
+## Run it locally
 
 ```powershell
 npm install
-$env:ADMIN_KEY = "your-secret-key"; npm start
+$env:VTTS_API_URL = "https://dvfyf668filek.cloudfront.net/api/v1"
+$env:VTTS_CHANNEL_KEY = "ch_your_publishable_key"
+npm start
 ```
 
-Then open:
+Open http://localhost:8765. That origin must be on the key's allowed origins, or
+VTTS rejects the requests with 403.
 
-- **Website:** http://localhost:8765
-- **Admin dashboard:** http://localhost:8765/admin
+## Deploying (Vercel)
 
-## Admin access
-
-There is no default admin key. The server **refuses to start** unless `ADMIN_KEY`
-is set, so the dashboard can never be left open with a key that is published in
-this repository. Pick your own value and set it in the environment — locally as
-above, and on the host via its environment settings.
-
-## Configuration
-
-| Variable | Required | Default | Purpose |
-| --- | --- | --- | --- |
-| `ADMIN_KEY` | **yes** | — | Key for the `/admin` dashboard and admin API |
-| `DB_PATH` | no | `./data/bookings.db` | Where the SQLite database lives — point this at a persistent volume in production |
-| `PORT` | no | `8765` | Port to listen on (hosts usually set this for you) |
-
-## How bookings work
-
-1. A customer fills in the booking form on the homepage (route, date, seats, name, phone).
-2. The request is saved to a SQLite database (`data/bookings.db`) with a unique
-   reference like `LLC-A1B2C3` and status `pending`.
-3. The customer is shown their reference and a one-tap **Confirm on WhatsApp**
-   button that sends the full booking details to your ZW WhatsApp line.
-4. Your team opens `/admin`, signs in with the admin key, and sees every request
-   with stats. Each booking has the passenger's phone as a WhatsApp link and
-   **Confirm / Cancel** buttons.
+The site is stateless, so it runs on Vercel unchanged: static files are served
+from the CDN and only `/api/config` runs as a function. Set `VTTS_API_URL` and
+`VTTS_CHANNEL_KEY` in the Vercel project's environment variables and redeploy.
+Add each new domain to the credential's allowed origins before pointing the
+domain at the site.
 
 ## Tech
 
-- **Backend:** Node.js (>= 24) + Express + built-in `node:sqlite` — no native
-  build tools needed.
-- **Frontend:** static HTML/CSS/JS in `public/` — no framework, loads fast.
-- **Database:** `data/bookings.db` (SQLite). Back this file up regularly.
+- **Backend:** Node.js + Express, serving the static site and `/api/config`.
+- **Frontend:** static HTML/CSS/JS in `public/`, no framework.
+- **Booking system:** VTTS public channel API.
 
 ## Key business details on the site
 
@@ -55,39 +95,3 @@ above, and on the host via its environment settings.
 - JHB departure point: Power House · BYO: Watering Hole Yard, G Silundika St
 - Booking office: 1st Floor Norval House, Shop 15, Cnr Fife St & 6th Ave, Bulawayo
 - Phones: ZW +263 777 955 373 · SA +27 74 641 2345
-
-## Deploying
-
-This app keeps bookings in a SQLite file on disk, so for real use it needs a host
-that gives it a **long-running process and persistent storage** — Railway,
-Render, Fly.io, or a VPS.
-
-### Vercel (demo only — bookings are NOT saved)
-
-Vercel runs this as a serverless function, where the only writable location is
-`/tmp`, which is per-instance and wiped when the instance recycles. The site
-deploys and the whole booking flow works end to end, which makes it fine for
-showing the product — but **any booking taken there will be lost**, and two
-visitors can land on different instances and see different data.
-
-`GET /api/status` returns `{"ephemeral": true}` whenever storage is throwaway,
-so you can always tell which mode a deployment is in. To take real bookings,
-use the Railway setup below or swap SQLite for a hosted database (Turso, Neon).
-
-Set `ADMIN_KEY` in the Vercel project's environment settings to unlock `/admin`;
-without it the site runs normally and the dashboard returns 503.
-
-### Railway (recommended — real bookings)
-
-```bash
-railway init
-railway volume add --mount-path /data
-railway variables --set ADMIN_KEY=your-secret-key --set DB_PATH=/data/bookings.db
-railway up
-```
-
-The volume is what makes bookings survive restarts and redeploys; `DB_PATH`
-points the database at it. Railway supplies `PORT` automatically.
-
-Finally, point the `lazarusluxurycoaches.co.za` domain at the host and **back up
-the database file regularly** — it is the only copy of your bookings.

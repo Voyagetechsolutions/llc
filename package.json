@@ -1,7 +1,7 @@
 {
   "name": "lazarus-luxury-coaches",
   "version": "1.0.0",
-  "description": "Website and booking system for Lazarus Luxury Coaches (LLC)",
+  "description": "Website and online booking channel for Lazarus Luxury Coaches, backed by VTTS",
   "main": "server.js",
   "type": "module",
   "scripts": {

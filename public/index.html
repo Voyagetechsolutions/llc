@@ -69,53 +69,88 @@
       <!-- Booking card -->
       <div class="booking-card" id="book">
         <h2>Book your seat</h2>
-        <p class="booking-card-sub">Reserve in under a minute. We&rsquo;ll confirm on WhatsApp.</p>
-        <form id="bookingForm" novalidate>
+        <p class="booking-card-sub" id="bookingSub">Live seat availability. Pick your seat and pay securely.</p>
+        <p class="form-error" id="formError" role="alert" hidden></p>
+
+        <div id="stepTrip">
           <div class="field">
-            <label for="route">Route</label>
-            <select id="route" name="route" required>
-              <option value="jhb-byo">Johannesburg → Bulawayo · R800</option>
-              <option value="byo-jhb">Bulawayo → Johannesburg · R600</option>
-            </select>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="travelDate">Travel date</label>
-              <input type="date" id="travelDate" name="travelDate" required>
-            </div>
-            <div class="field">
-              <label for="seats">Seats</label>
-              <select id="seats" name="seats">
-                <option>1</option><option>2</option><option>3</option><option>4</option>
-                <option>5</option><option>6</option><option>7</option><option>8</option>
-              </select>
-            </div>
+            <label for="direction">Route</label>
+            <select id="direction" name="direction"></select>
           </div>
           <div class="field">
-            <label for="fullName">Full name</label>
-            <input type="text" id="fullName" name="fullName" placeholder="As per passport" autocomplete="name" required>
+            <span class="field-label" id="tripListLabel">Choose a departure</span>
+            <div class="trip-list" id="tripList" aria-labelledby="tripListLabel" aria-live="polite">
+              <p class="booking-status">Loading departures…</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="stepSeat" hidden>
+          <div class="step-head">
+            <button type="button" class="btn-link" id="backToTrips">← Change departure</button>
+            <span id="seatTripLabel"></span>
+          </div>
+          <div class="seat-legend" aria-hidden="true">
+            <span><i class="seat-dot available"></i>Available</span>
+            <span><i class="seat-dot held"></i>Being booked</span>
+            <span><i class="seat-dot sold"></i>Taken</span>
+          </div>
+          <div class="seat-map" id="seatMap" aria-label="Seat map"></div>
+        </div>
+
+        <form id="bookingForm" novalidate hidden>
+          <p class="hold-banner" id="holdBanner" aria-live="polite"></p>
+          <div class="field-row even">
+            <div class="field">
+              <label for="firstName">First name</label>
+              <input type="text" id="firstName" name="firstName" autocomplete="given-name" maxlength="80" required>
+            </div>
+            <div class="field">
+              <label for="lastName">Last name</label>
+              <input type="text" id="lastName" name="lastName" autocomplete="family-name" maxlength="80" required>
+            </div>
           </div>
           <div class="field">
             <label for="phone">Phone / WhatsApp number</label>
-            <input type="tel" id="phone" name="phone" placeholder="+27 or +263 ..." autocomplete="tel" required>
+            <input type="tel" id="phone" name="phone" placeholder="+27 or +263 ..." autocomplete="tel" maxlength="30" required>
           </div>
           <div class="field">
-            <label for="notes">Notes <span class="optional">(optional)</span></label>
-            <input type="text" id="notes" name="notes" placeholder="Luggage, pickup point, special requests...">
+            <label for="email">Email <span class="optional">(optional)</span></label>
+            <input type="email" id="email" name="email" autocomplete="email">
           </div>
-          <p class="form-error" id="formError" role="alert" hidden></p>
-          <button type="submit" class="btn btn-gold btn-block" id="submitBtn">Reserve My Seat</button>
-          <p class="form-note">No payment needed now — pay at the office or on confirmation.</p>
+          <div class="field" data-field="idNumber" hidden>
+            <label for="idNumber">Passport or ID number</label>
+            <input type="text" id="idNumber" name="idNumber" maxlength="80" placeholder="As per travel document">
+          </div>
+          <div class="field" data-field="promoCode" hidden>
+            <label for="promoCode">Promo code <span class="optional">(optional)</span></label>
+            <input type="text" id="promoCode" name="promoCode" maxlength="40">
+          </div>
+          <div class="field" data-field="provider" hidden>
+            <label for="provider">Payment method</label>
+            <select id="provider" name="provider"></select>
+          </div>
+          <button type="submit" class="btn btn-gold btn-block" id="submitBtn">Continue to payment</button>
+          <p class="form-note" id="paymentNote"></p>
+          <button type="button" class="btn-link centered" id="backToSeats">← Choose a different seat</button>
         </form>
 
         <div class="booking-success" id="bookingSuccess" hidden>
           <div class="success-icon">✓</div>
-          <h3>Request received!</h3>
+          <h3>Seat reserved</h3>
           <p>Your booking reference is</p>
-          <p class="success-ref" id="successRef">LLC-000000</p>
+          <p class="success-ref" id="successRef"></p>
           <p class="success-detail" id="successDetail"></p>
-          <a href="#" class="btn btn-gold btn-block" id="whatsappConfirm" target="_blank" rel="noopener">Confirm on WhatsApp</a>
+          <p class="success-next" id="successNext"></p>
+          <a href="#" class="btn btn-gold btn-block" id="payNow" hidden>Pay securely</a>
+          <a href="#" class="btn btn-outline btn-block" id="whatsappConfirm" target="_blank" rel="noopener">Send details on WhatsApp</a>
           <button type="button" class="btn-link" id="bookAnother">Make another booking</button>
+        </div>
+
+        <div class="booking-unavailable" id="bookingUnavailable" hidden>
+          <p id="unavailableMessage">Online booking is temporarily unavailable.</p>
+          <a class="btn btn-gold btn-block" href="https://wa.me/263777955373?text=Hello%20Lazarus%20Luxury%20Coaches%2C%20I%27d%20like%20to%20book%20a%20seat." target="_blank" rel="noopener">Book on WhatsApp</a>
+          <a class="btn btn-outline btn-block" href="tel:+263777955373">Call +263 777 955 373</a>
         </div>
       </div>
     </div>
@@ -195,7 +230,7 @@
           <button class="btn btn-gold book-route" data-route="byo-jhb">Book this route</button>
         </article>
       </div>
-      <p class="fine-print">Fares are subject to change. Your seat is only confirmed once our team contacts you.</p>
+      <p class="fine-print">Fares are subject to change. Online bookings are confirmed, and your ticket issued, once payment clears.</p>
     </div>
   </section>
 
@@ -316,7 +351,7 @@
           <li>Arrive for check-in by <strong>16:00</strong> — coaches depart at <strong>17:00 sharp</strong>.</li>
           <li>Johannesburg: board at <strong>Power House</strong>. Bulawayo: <strong>Watering Hole Yard</strong>, G Silundika St, next to Greens Supermarket.</li>
           <li>Carry a valid passport for cross-border travel between South Africa and Zimbabwe.</li>
-          <li>Your booking is confirmed once our team contacts you on the number you provided.</li>
+          <li>Online bookings are confirmed, and your ticket issued, once payment clears. WhatsApp and phone bookings are confirmed by our team.</li>
         </ul>
       </div>
     </div>
