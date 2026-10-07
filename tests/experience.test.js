@@ -177,10 +177,10 @@ test("hero timeline reveals cabin before logo and replay restarts exterior", asy
   h.observers[1].callback([{ isIntersecting: true }]);
   await flush();
   assert.match(video.src, /hero-journey.mp4$/);
-  video.currentTime = 10;
+  video.currentTime = 32;
   video.dispatchEvent(new h.w.Event("timeupdate"));
   assert.equal(hero.dataset.scene, "entrance");
-  video.currentTime = 14;
+  video.currentTime = 36;
   video.dispatchEvent(new h.w.Event("timeupdate"));
   assert.equal(hero.dataset.scene, "cabin");
   video.dispatchEvent(new h.w.Event("ended"));

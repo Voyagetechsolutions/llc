@@ -16,20 +16,20 @@ export function initHeroCinema() {
   function scene() {
     if (finished) {
       hero.dataset.scene = "brand";
-      label.textContent = "04 / Welcome aboard";
+      label.textContent = "05 / Welcome aboard";
       progress.style.transform = "scaleX(1)";
       return;
     }
     const t = video.currentTime;
     hero.dataset.scene =
-      t >= 12.5 ? "cabin" : t >= 9.2 ? "entrance" : "exterior";
+      t >= 34.89 ? "cabin" : t >= 31.59 ? "entrance" : "exterior";
     label.textContent =
-      t >= 12.5
-        ? "03 / Step inside"
-        : t >= 9.2
-          ? "02 / Come aboard"
-          : "01 / Meet the coach";
-    progress.style.transform = `scaleX(${Math.min(1, t / (video.duration || 18.15))})`;
+      t >= 34.89
+        ? "04 / Step inside"
+        : t >= 31.59
+          ? "03 / Come aboard"
+          : t >= 25.39 ? "02 / Meet the coach" : "01 / The fleet film";
+    progress.style.transform = `scaleX(${Math.min(1, t / (video.duration || 39.39))})`;
   }
   function buttons() {
     toggle.textContent = video.paused ? "Play experience" : "Pause experience";
