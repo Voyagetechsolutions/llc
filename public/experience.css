@@ -828,8 +828,8 @@ body {
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 1.2s ease,
-    visibility 1.2s;
+    opacity 2s ease,
+    visibility 0s linear 2s;
   pointer-events: none;
   padding: 70px 20px 150px;
 }
@@ -837,8 +837,9 @@ body {
   width: clamp(120px, 15vw, 220px);
   height: auto;
   object-fit: contain;
-  transform: scale(0.88);
-  transition: transform 1.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 2.4s ease, transform 3s ease;
   margin-bottom: 22px;
 }
 .cinema-brand-name {
@@ -877,9 +878,12 @@ body {
 .cinema-hero[data-scene="brand"] .cinema-brand {
   opacity: 1;
   visibility: visible;
+  transition-delay: 0s;
 }
 .cinema-hero[data-scene="brand"] .cinema-brand img {
+  opacity: 1;
   transform: scale(1);
+  transition-delay: 0.35s;
 }
 .cinema-hero[data-loading="true"] #heroSceneLabel::after {
   content: " / Loading filmâ€¦";
