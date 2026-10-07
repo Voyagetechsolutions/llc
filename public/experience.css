@@ -999,9 +999,9 @@ body {
  .cinema-shade{background:linear-gradient(90deg,#080d0bbd,transparent 75%),linear-gradient(0deg,#080d0bf0,transparent 30%,transparent 75%,#080d0b65)}
 }
 
-/* Preserve the complete portrait frame on every screen. */
+/* Full-bleed cinematic framing, with scene-specific focal points. */
 .cinema-stage{height:100svh;min-height:650px;max-height:none}
-#heroJourney,.cinema-hero[data-scene="entrance"] #heroJourney,.cinema-hero[data-scene="cabin"] #heroJourney{inset:0;width:100%;height:100%;object-fit:contain;object-position:center;transform:none;mask-image:none;transition:none}
+#heroJourney,.cinema-hero[data-scene="entrance"] #heroJourney,.cinema-hero[data-scene="cabin"] #heroJourney{inset:0;width:100%;height:100%;object-fit:cover;object-position:center 65%;transform:none;mask-image:none;transition:object-position 1.5s ease}
 .cinema-stage::before{opacity:.13}
 .cinema-shade{background:linear-gradient(0deg,#080d0bbf,transparent 24%,transparent 80%,#080d0b80)}
 .site-header{position:fixed;top:0;left:0;right:0;width:100%;z-index:55}
@@ -1014,3 +1014,9 @@ body.hero-visible .header-cta{background:#e0c279;color:#101714}
 .cinema-topline{top:145px}
 .cinema-intro{left:5%;width:31%}.cinema-intro h1{font-size:clamp(3rem,4.6vw,5rem)}
 @media(max-width:860px){.cinema-stage{height:100svh;min-height:650px}body.hero-visible .site-header{top:52px}.cinema-topline{top:155px}.cinema-intro{top:33%;left:6%;width:88%}.cinema-intro h1{font-size:clamp(2.8rem,10vw,4rem)}body.hero-visible .main-nav{background:#101714f5}.cinema-bottom{bottom:35px}}
+
+.cinema-hero[data-scene="entrance"] #heroJourney{object-position:center 48%}
+.cinema-hero[data-scene="cabin"] #heroJourney{object-position:center 57%}
+.cinema-shade{background:linear-gradient(90deg,#080d0b90,transparent 72%),linear-gradient(0deg,#080d0bd9,transparent 28%,transparent 75%,#080d0b60)}
+.cinema-intro{width:47%}.cinema-intro h1{font-size:clamp(3.5rem,6vw,6.5rem)}
+@media(max-width:860px){#heroJourney,.cinema-hero[data-scene="entrance"] #heroJourney,.cinema-hero[data-scene="cabin"] #heroJourney{object-position:center}.cinema-intro{width:88%}.cinema-intro h1{font-size:clamp(2.8rem,10vw,4rem)}}
