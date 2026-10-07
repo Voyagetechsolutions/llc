@@ -6,6 +6,7 @@ navToggle.addEventListener("click", () => {
   const open = mainNav.classList.toggle("open");
   navToggle.classList.toggle("open", open);
   navToggle.setAttribute("aria-expanded", String(open));
+  navToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
 });
 
 mainNav.querySelectorAll("a").forEach((link) => {
@@ -13,6 +14,7 @@ mainNav.querySelectorAll("a").forEach((link) => {
     mainNav.classList.remove("open");
     navToggle.classList.remove("open");
     navToggle.setAttribute("aria-expanded", "false");
+    navToggle.setAttribute("aria-label", "Open menu");
   });
 });
 
@@ -144,6 +146,7 @@ async function loadCatalog() {
     );
   }
   buildDirections();
+  window.dispatchEvent(new CustomEvent("vtts:catalog", { detail: booking.catalog }));
 }
 
 function buildDirections() {
@@ -289,6 +292,7 @@ function openPassengerForm() {
 function startHoldTimer() {
   stopHoldTimer();
   const tick = () => {
+    if (!booking.hold) { stopHoldTimer(); return; }
     const remaining = new Date(booking.hold.expiresAt).getTime() - Date.now();
     if (remaining <= 0) {
       abandonHold();
@@ -303,7 +307,7 @@ function startHoldTimer() {
     holdBanner.textContent = `Seat ${booking.hold.seat.code} is held for you — ${minutes}:${seconds} left to finish booking.`;
   };
   tick();
-  booking.holdTimer = setInterval(tick, 1000);
+  if (booking.hold) booking.holdTimer = setInterval(tick, 1000);
 }
 
 function stopHoldTimer() {
@@ -453,8 +457,11 @@ document.querySelectorAll(".book-route").forEach((btn) => {
       directionSelect.value = match.value;
       renderTrips();
     }
-    bookingCard.scrollIntoView({ behavior: "smooth" });
+    bookingCard.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   });
 });
 
+window.addEventListener("vtts:catalog-request", () => {
+  if (booking.catalog) window.dispatchEvent(new CustomEvent("vtts:catalog", { detail: booking.catalog }));
+});
 initBooking();

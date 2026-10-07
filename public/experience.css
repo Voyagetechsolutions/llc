@@ -1,0 +1,1000 @@
+/* Real-fleet cinematic presentation; booking styles remain in styles.css. */
+:root {
+  --ink: #101714;
+  --paper: #f2f0e9;
+  --gold: #c9a14d;
+  --radius: 3px;
+}
+body {
+  background: var(--paper);
+}
+.skip-link {
+  position: fixed;
+  top: -80px;
+  left: 16px;
+  z-index: 200;
+  background: #fff;
+  padding: 16px;
+}
+.skip-link:focus {
+  top: 16px;
+}
+:focus-visible {
+  outline: 3px solid #b98b32;
+  outline-offset: 5px;
+}
+.topbar {
+  background: #0c1411;
+}
+.site-header {
+  background: var(--paper);
+  border-bottom: 1px solid #d5d5ca;
+}
+.brand-text strong,
+.brand-text small,
+.main-nav a {
+  color: var(--ink);
+}
+.brand-logo {
+  width: 46px;
+  height: 46px;
+  background: #101714;
+  border-radius: 50%;
+}
+.btn {
+  border-radius: 2px;
+  padding: 1rem 1.5rem;
+}
+.header-cta {
+  background: var(--ink);
+  color: #fff;
+}
+.eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+}
+.text-link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid #a49165;
+  padding-bottom: 8px;
+  display: inline-block;
+  font-size: 0.85rem;
+}
+.arrival {
+  position: relative;
+  min-height: calc(100svh - 125px);
+  padding: 70px 4% 90px;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  align-items: center;
+  overflow: hidden;
+}
+.arrival-number {
+  position: absolute;
+  top: 28px;
+  left: 4%;
+  font:
+    500 0.65rem Inter,
+    sans-serif;
+  letter-spacing: 0.2em;
+  color: #6b7067;
+}
+.arrival-copy {
+  position: relative;
+  z-index: 2;
+}
+.arrival h1 {
+  font-size: clamp(3.5rem, 6.4vw, 7rem);
+  color: var(--ink);
+  line-height: 0.99;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+}
+.arrival h1 em {
+  color: #94742f;
+  font-weight: 500;
+}
+.arrival-copy > p:not(.eyebrow) {
+  max-width: 350px;
+  margin: 28px 0;
+  color: #62665d;
+  font-size: 0.94rem;
+}
+.arrival-actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.arrival-vehicle {
+  position: relative;
+  padding-top: 60px;
+  margin-left: -15px;
+}
+.arrival-vehicle img {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 35px 55px -35px #10171490;
+  transform: rotate(-2deg);
+}
+.vehicle-word {
+  position: absolute;
+  top: 0;
+  left: -20px;
+  font:
+    600 clamp(4rem, 9vw, 10rem) Inter,
+    sans-serif;
+  letter-spacing: -0.07em;
+  color: #e0e0d6;
+}
+.image-caption {
+  display: block;
+  text-align: right;
+  margin-top: 25px;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.arrival-bottom {
+  position: absolute;
+  bottom: 25px;
+  left: 4%;
+  right: 4%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  border-top: 1px solid #d4d5cb;
+  padding-top: 20px;
+}
+.arrival-bottom a {
+  color: inherit;
+  text-decoration: none;
+}
+.journey {
+  background: var(--ink);
+  color: #f5f1e8;
+  min-height: 150vh;
+  position: relative;
+}
+.journey-sticky {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 65px 10%;
+  gap: 7vw;
+  overflow: hidden;
+}
+.journey h2,
+.night-scene h2,
+.interior-scene h2 {
+  font-size: clamp(3rem, 5.4vw, 6rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.03;
+}
+.journey-heading > p:not(.eyebrow) {
+  margin: 26px 0;
+  color: #bac1b6;
+}
+.journey-film,
+.night-film,
+.interior-film {
+  position: relative;
+  overflow: hidden;
+  background: #222b25;
+}
+.journey-film {
+  height: 75svh;
+  max-height: 800px;
+  transform: translateY(var(--film-shift, 0px));
+}
+.ambient-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.media-toggle {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  background: #101714d9;
+  color: #fff;
+  border: 1px solid #ffffff80;
+  padding: 10px 16px;
+  cursor: pointer;
+  font:
+    500 0.75rem Inter,
+    sans-serif;
+  z-index: 2;
+}
+.film-label {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #fff;
+  text-shadow: 0 1px 5px #000;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+}
+.journey-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #ffffff20;
+}
+.journey-progress span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform: scaleX(var(--journey-progress, 0));
+  transform-origin: left;
+  background: var(--gold);
+}
+.night-scene {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #080d0b;
+  color: #f2f0e9;
+  align-items: center;
+  gap: 8vw;
+  padding: 90px 10%;
+}
+.night-film {
+  height: 650px;
+}
+.night-copy p:not(.eyebrow) {
+  color: #bcc0b9;
+  margin: 25px 0;
+}
+.trust-strip {
+  background: #162019;
+}
+.trust-inner strong {
+  font-weight: 500;
+}
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 30px;
+  margin-bottom: 45px;
+}
+.section-heading h2,
+.section h2 {
+  font-size: clamp(2.5rem, 4.3vw, 4.8rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.section-heading > p {
+  color: #6b7067;
+  font-size: 0.85rem;
+}
+.fleet-viewer {
+  position: relative;
+  background: #d7d9ce;
+  min-height: 300px;
+}
+.fleet-viewer img {
+  width: 100%;
+  height: 620px;
+  object-fit: contain;
+}
+.fleet-image-meta {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #101714e8;
+  color: #fff;
+  padding: 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 0.75rem;
+}
+.fleet-image-meta button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.fleet-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid #c7c9bd;
+}
+.fleet-controls button {
+  font:
+    500 0.75rem Inter,
+    sans-serif;
+  background: none;
+  border: 0;
+  border-top: 2px solid transparent;
+  padding: 24px 15px;
+  text-align: left;
+  color: #6c7066;
+  cursor: pointer;
+}
+.fleet-controls button span {
+  margin-left: 20px;
+}
+.fleet-controls button[aria-pressed="true"] {
+  border-top-color: #9c782f;
+  color: #101714;
+  background: #e8e7dd;
+}
+.fleet-note {
+  font-size: 0.72rem;
+  color: #6c7066;
+  margin-top: 15px;
+}
+.fleet-viewer:fullscreen {
+  display: grid;
+  place-items: center;
+  background: #101714;
+}
+.fleet-viewer:fullscreen img {
+  height: 100vh;
+}
+.interior-scene {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8vw;
+  padding: 90px 10%;
+  align-items: center;
+  background: #e5e4d8;
+}
+.interior-copy > p:not(.eyebrow) {
+  max-width: 370px;
+  margin: 28px 0;
+  color: #62665d;
+}
+.interior-film {
+  height: 650px;
+}
+.booking-section {
+  background: #101714;
+  color: var(--paper);
+}
+.booking-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8vw;
+  align-items: start;
+}
+.booking-layout h2 em {
+  color: #e0c279;
+}
+.booking-layout > div > p:not(.eyebrow) {
+  max-width: 390px;
+  color: #bec3b8;
+  margin: 25px 0;
+}
+.booking-explanation {
+  font-size: 0.8rem;
+}
+.booking-card {
+  color: #1c2536;
+  border-radius: 3px;
+  max-width: none;
+}
+.booking-card h2 {
+  font-size: 2rem;
+}
+.route-card,
+.travel-notes {
+  background: #17221b;
+  border-radius: 3px;
+}
+.fare-card,
+.contact-card {
+  border-radius: 3px;
+  box-shadow: none;
+}
+.fare-card.featured {
+  background: #17221b;
+}
+.band {
+  background: #1b271e;
+}
+.site-footer {
+  background: #101714;
+}
+.wa-float {
+  width: 46px;
+  height: 46px;
+  box-shadow: none;
+}
+.mobile-book {
+  display: none;
+}
+.reveal {
+  transform: translateY(14px);
+}
+@media (max-width: 960px) {
+  .arrival {
+    grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+  }
+  .arrival h1 {
+    font-size: 4rem;
+  }
+  .arrival-actions {
+    gap: 18px;
+  }
+  .journey-sticky,
+  .night-scene,
+  .interior-scene {
+    padding-inline: 6%;
+    gap: 5vw;
+  }
+  .night-film,
+  .interior-film {
+    height: 550px;
+  }
+  .fleet-viewer img {
+    height: 490px;
+  }
+}
+@media (max-width: 860px) {
+  .main-nav {
+    background: var(--paper);
+  }
+  .main-nav a {
+    border-color: #d5d5ca;
+  }
+  .nav-toggle span {
+    background: var(--ink);
+  }
+  .arrival {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: auto;
+    padding: 70px 6% 90px;
+  }
+  .arrival h1 {
+    font-size: clamp(3.4rem, 11vw, 5rem);
+  }
+  .arrival-vehicle {
+    margin: 35px 0 0;
+    padding-top: 35px;
+  }
+  .vehicle-word {
+    font-size: 17vw;
+    left: 0;
+  }
+  .arrival-vehicle img {
+    transform: rotate(-1deg);
+  }
+  .arrival-bottom {
+    font-size: 0.55rem;
+    letter-spacing: 0.06em;
+  }
+  .arrival-bottom span span {
+    display: none;
+  }
+  .journey {
+    min-height: 0;
+  }
+  .journey-sticky {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 65px 6%;
+    gap: 35px;
+  }
+  .journey-film {
+    height: 72svh;
+    transform: none;
+  }
+  .journey h2,
+  .night-scene h2,
+  .interior-scene h2 {
+    font-size: 3.5rem;
+  }
+  .night-scene,
+  .interior-scene {
+    display: flex;
+    flex-direction: column;
+    padding: 65px 6%;
+    align-items: stretch;
+    gap: 35px;
+  }
+  .night-copy {
+    order: -1;
+  }
+  .night-film,
+  .interior-film {
+    height: 72svh;
+    max-height: 720px;
+  }
+  .section-heading {
+    align-items: start;
+  }
+  .section-heading > p {
+    display: none;
+  }
+  .fleet-viewer img {
+    height: 370px;
+  }
+  .fleet-controls button {
+    padding: 20px 8px;
+    font-size: 0.65rem;
+  }
+  .fleet-controls button span {
+    display: block;
+    margin: 6px 0 0;
+  }
+  .fleet-image-meta {
+    padding: 16px;
+    font-size: 0.65rem;
+  }
+  .booking-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .booking-card {
+    width: 100%;
+  }
+  .mobile-book {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #dfc17b;
+    color: #101714;
+    z-index: 65;
+    padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+    font-size: 0.8rem;
+    text-decoration: none;
+    text-align: center;
+    font-weight: 600;
+  }
+  .wa-float {
+    bottom: 75px;
+  }
+  .site-footer {
+    padding-bottom: 65px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  .journey {
+    min-height: 0;
+  }
+  .journey-sticky {
+    position: relative;
+  }
+  .journey-film {
+    transform: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.bus-model-canvas {
+  display: block;
+  width: 100%;
+  touch-action: pan-y;
+}
+#modelControls {
+  margin-top: 20px;
+}
+#modelStatus {
+  font-size: 0.8rem;
+  margin-top: 12px;
+}
+.live-route-summary {
+  border-left: 2px solid var(--gold);
+  padding: 10px 16px;
+  margin: 20px 0;
+  color: #5b6655;
+  font-size: 0.85rem;
+}
+
+.arrival .eyebrow,
+.fleet-experience .eyebrow,
+.interior-scene .eyebrow,
+.section:not(.booking-section) .eyebrow {
+  color: #806323;
+}
+#top {
+  scroll-margin-top: 0;
+}
+
+.topbar {
+  color: #eee9dc;
+}
+.topbar a {
+  color: #e0c279;
+}
+.page-top {
+  height: 0;
+  scroll-margin-top: 0;
+}
+@media (max-width: 860px) {
+  .arrival-copy {
+    display: contents;
+  }
+  .arrival .eyebrow {
+    order: 0;
+  }
+  .arrival h1 {
+    order: 1;
+  }
+  .arrival-vehicle {
+    order: 2;
+    margin-top: 24px;
+  }
+  .arrival-copy > p:not(.eyebrow) {
+    order: 3;
+    margin: 20px 0;
+  }
+  .arrival-actions {
+    order: 4;
+  }
+  .arrival {
+    padding-top: 65px;
+  }
+  .arrival-number {
+    top: 24px;
+  }
+  .image-caption {
+    margin-top: 16px;
+  }
+}
+.arrival-vehicle img {
+  height: auto;
+}
+
+/* Hero film: real exterior, doorway, cabin, then the original brand mark. */
+.cinema-hero {
+  background: #080d0b;
+  color: #f5f1e8;
+  position: relative;
+}
+.cinema-stage {
+  height: calc(100svh - 115px);
+  min-height: 620px;
+  max-height: 1200px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #080d0b;
+}
+.cinema-stage::before {
+  content: "";
+  position: absolute;
+  inset: -35px;
+  background: url("assets/experience/hero-journey.webp") center 45% / cover;
+  filter: blur(30px);
+  opacity: 0.22;
+  z-index: -1;
+}
+#heroJourney {
+  position: absolute;
+  inset: 0 0 0 36%;
+  width: 64%;
+  height: 100%;
+  object-fit: contain;
+  transition:
+    width 1.6s ease,
+    inset 1.6s ease,
+    transform 2s ease;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
+}
+.cinema-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #080d0bd9, transparent 70%),
+    linear-gradient(
+      0deg,
+      #080d0b 0%,
+      transparent 24%,
+      transparent 80%,
+      #080d0b60
+    );
+  pointer-events: none;
+}
+.cinema-intro {
+  position: absolute;
+  left: 7%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46%;
+  transition:
+    opacity 1s ease,
+    transform 1.5s ease;
+}
+.cinema-intro h1 {
+  font-size: clamp(3.5rem, 6.5vw, 7rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  color: #f5f1e8;
+}
+.cinema-intro .eyebrow {
+  color: #e0c279;
+  margin-bottom: 25px;
+}
+.cinema-intro > p:last-child {
+  color: #d7d9cc;
+  margin-top: 25px;
+  font-size: 0.9rem;
+}
+.cinema-topline {
+  position: absolute;
+  top: 28px;
+  left: 4%;
+  right: 4%;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font:
+    500 0.6rem Inter,
+    sans-serif;
+  letter-spacing: 0.2em;
+  color: #e8e4d8;
+}
+.cinema-bottom {
+  position: absolute;
+  bottom: 40px;
+  left: 4%;
+  right: 4%;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  z-index: 5;
+}
+#heroSceneLabel {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #e0c279;
+  margin-bottom: 17px;
+}
+.cinema-player {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.cinema-player button,
+.cinema-player a {
+  background: none;
+  color: #f5f1e8;
+  border: 0;
+  border-bottom: 1px solid #a49165;
+  padding: 8px 0;
+  font:
+    500 0.72rem Inter,
+    sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+}
+.cinema-timeline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #ffffff20;
+}
+.cinema-timeline span {
+  display: block;
+  height: 100%;
+  background: #e0c279;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s linear;
+}
+.cinema-brand {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #080d0bf5;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 1.2s ease,
+    visibility 1.2s;
+  pointer-events: none;
+  padding: 70px 20px 150px;
+}
+.cinema-brand img {
+  width: clamp(120px, 15vw, 220px);
+  height: auto;
+  object-fit: contain;
+  transform: scale(0.88);
+  transition: transform 1.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  margin-bottom: 22px;
+}
+.cinema-brand-name {
+  font:
+    500 clamp(2.3rem, 4vw, 4.2rem) Inter,
+    sans-serif;
+  letter-spacing: 0.25em;
+  padding-left: 0.25em;
+}
+.cinema-brand-sub {
+  font-size: 0.72rem;
+  letter-spacing: 0.4em;
+  color: #e0c279;
+  margin-top: 10px;
+}
+.cinema-brand-line {
+  font:
+    italic 1.3rem "Cormorant Garamond",
+    serif;
+  margin-top: 28px;
+  color: #ddd5c2;
+}
+.cinema-hero[data-scene="entrance"] .cinema-intro,
+.cinema-hero[data-scene="cabin"] .cinema-intro,
+.cinema-hero[data-scene="brand"] .cinema-intro {
+  opacity: 0;
+  transform: translateY(-50%) translateX(-30px);
+  pointer-events: none;
+}
+.cinema-hero[data-scene="entrance"] #heroJourney,
+.cinema-hero[data-scene="cabin"] #heroJourney {
+  inset: 0;
+  width: 100%;
+  transform: scale(1.035);
+}
+.cinema-hero[data-scene="brand"] .cinema-brand {
+  opacity: 1;
+  visibility: visible;
+}
+.cinema-hero[data-scene="brand"] .cinema-brand img {
+  transform: scale(1);
+}
+.cinema-hero[data-loading="true"] #heroSceneLabel::after {
+  content: " / Loading film…";
+  color: #eee;
+}
+.cinema-noscript {
+  padding: 15px 4%;
+  color: #e0c279;
+}
+@media (max-width: 860px) {
+  .cinema-stage {
+    height: calc(100svh - 120px);
+    min-height: 620px;
+    max-height: none;
+    margin-bottom: 0;
+  }
+  #heroJourney {
+    inset: 0;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    mask-image: none;
+  }
+  .cinema-shade {
+    background: linear-gradient(
+      0deg,
+      #080d0bf5,
+      transparent 35%,
+      #080d0b20 65%,
+      #080d0b80
+    );
+  }
+  .cinema-intro {
+    left: 6%;
+    top: 24%;
+    width: 88%;
+    text-shadow: 0 2px 20px #000;
+  }
+  .cinema-intro h1 {
+    font-size: clamp(3.1rem, 12vw, 4.7rem);
+  }
+  .cinema-intro .eyebrow {
+    margin-bottom: 14px;
+  }
+  .cinema-intro > p:last-child {
+    margin-top: 18px;
+  }
+  .cinema-topline {
+    top: 20px;
+    left: 6%;
+    right: 6%;
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+  }
+  .cinema-topline span:last-child {
+    display: none;
+  }
+  .cinema-bottom {
+    bottom: 35px;
+    left: 6%;
+    right: 6%;
+    align-items: start;
+    gap: 20px;
+    flex-direction: column;
+  }
+  .cinema-bottom .btn {
+    padding: 0.85rem 1.2rem;
+  }
+  .cinema-player {
+    gap: 26px;
+  }
+  #heroSceneLabel {
+    margin-bottom: 12px;
+  }
+  .cinema-brand {
+    padding-bottom: 190px;
+  }
+  .cinema-brand img {
+    width: 150px;
+  }
+  .cinema-brand-name {
+    font-size: 2.2rem;
+  }
+  .cinema-brand-line {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  .cinema-hero {
+    padding-bottom: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cinema-stage * {
+    transition: none !important;
+  }
+  .cinema-intro {
+    text-shadow: 0 2px 15px #000;
+  }
+}
+
+@media (max-width: 860px) {
+  .cinema-stage {
+    height: calc(100svh - 170px);
+    min-height: 510px;
+  }
+  .cinema-intro {
+    top: 27%;
+  }
+}
+
+@media(max-width:860px){body.hero-visible .mobile-book{display:none}}
+@media(min-width:861px){
+ #heroJourney{inset:0;width:100%;object-fit:cover;object-position:center 68%;mask-image:none;transition:object-position 1.5s ease,transform 2s ease}
+ .cinema-hero[data-scene="entrance"] #heroJourney{object-position:center 50%}
+ .cinema-hero[data-scene="cabin"] #heroJourney{object-position:center 58%;transform:scale(1.035)}
+ .cinema-intro{text-shadow:0 2px 25px #0009}
+ .cinema-shade{background:linear-gradient(90deg,#080d0bbd,transparent 75%),linear-gradient(0deg,#080d0bf0,transparent 30%,transparent 75%,#080d0b65)}
+}

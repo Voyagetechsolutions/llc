@@ -1,0 +1,19 @@
+{
+  "method": "real-footage-and-photography",
+  "vehicles": [
+    {
+      "id": "reference-coach",
+      "identityStatus": "unmatched-to-registration",
+      "model": {
+        "status": "requires-verified-asset",
+        "url": null,
+        "rotationY": 0
+      },
+      "references": [
+        "fleet-depot.webp",
+        "exterior.mp4",
+        "interior.mp4"
+      ]
+    }
+  ]
+}

@@ -95,3 +95,7 @@ domain at the site.
 - JHB departure point: Power House · BYO: Watering Hole Yard, G Silundika St
 - Booking office: 1st Floor Norval House, Shop 15, Cnr Fife St & 6th Ave, Bulawayo
 - Phones: ZW +263 777 955 373 · SA +27 74 641 2345
+
+## Cinematic experience
+
+See [EXPERIENCE.md](EXPERIENCE.md) for the real-media asset map, responsive behavior, tests and optional verified GLB integration. Run `npm test` for mocked booking and presentation checks.
