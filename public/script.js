@@ -447,17 +447,10 @@ document.getElementById("bookAnother").addEventListener("click", async () => {
   await loadCatalog();
 });
 
-// "Book this route" buttons preselect the matching direction and scroll up to the card
-const ROUTE_HINTS = { "jhb-byo": /^(johannesburg|jhb)/i, "byo-jhb": /^(bulawayo|byo)/i };
+// Route booking links enter the group booking page with a direction hint.
 document.querySelectorAll(".book-route").forEach((btn) => {
   btn.addEventListener("click", () => {
-    const hint = ROUTE_HINTS[btn.dataset.route];
-    const match = hint && [...directionSelect.options].find((option) => hint.test(option.value));
-    if (match && !stepTrip.hidden) {
-      directionSelect.value = match.value;
-      renderTrips();
-    }
-    bookingCard.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    window.location.assign(`/booking.html?route=${encodeURIComponent(btn.dataset.route)}`);
   });
 });
 

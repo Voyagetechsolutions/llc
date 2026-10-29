@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book your seat now — Lazarus Luxury Coaches</title>
+  <meta name="description" content="Book for your whole group. Add every passenger and select seats on our 60-seat coach layout.">
+  <link rel="icon" href="/assets/logo.png"><link rel="stylesheet" href="/booking.css">
+  <script type="module" src="/booking.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to booking</a>
+  <header><a class="brand" href="/"><img src="/assets/logo.png" alt="Lazarus Luxury Coaches"><span>LAZARUS<small>LUXURY COACHES</small></span></a><a class="back-home" href="/">← Back to website</a></header>
+  <main id="main">
+    <div class="page-intro"><p class="eyebrow">YOUR JOURNEY STARTS HERE</p><h1>Book your <em>seat now.</em></h1><p>One journey. Every passenger taken care of.</p></div>
+    <ol class="steps" aria-label="Booking progress"><li aria-current="step">01 <span>Journey & passengers</span></li><li>02 <span>Choose seats</span></li><li>03 <span>Review & tickets</span></li></ol>
+    <p id="connectionStatus" class="notice" role="status">Checking published departures…</p>
+    <p id="error" class="error" role="alert" hidden></p>
+    <form id="journeyForm">
+      <section id="passengerStep" class="panel" aria-labelledby="passengerHeading">
+        <div class="section-heading"><span class="chapter">01</span><div><p class="eyebrow">THE TRAVELLERS</p><h2 id="passengerHeading" tabindex="-1">Who’s coming along?</h2></div></div>
+        <div class="field-grid journey-fields"><label>Departure<select id="trip" required disabled><option value="">Loading departures…</option></select></label><label>Number of passengers<select id="passengerCount" aria-describedby="countHelp"></select><small id="countHelp">One seat and one ticket record per passenger.</small></label></div>
+        <div id="previewJourney" class="field-grid" hidden><label>Preferred route<select id="preferredRoute"><option>Johannesburg → Bulawayo</option><option>Bulawayo → Johannesburg</option></select></label><label>Preferred travel date<input id="preferredDate" type="date" required disabled></label></div>
+        <fieldset class="contact"><legend>Primary passenger · booking contact</legend><p>We’ll use these contact details for the whole group.</p><div class="field-grid"><label>Phone number<input name="phone" id="phone" type="tel" autocomplete="tel" required maxlength="30" placeholder="e.g. +27 74 641 2345"></label><label>Email address <span class="optional">(optional)</span><input name="email" id="email" type="email" autocomplete="email" maxlength="150" placeholder="you@example.com"></label></div></fieldset>
+        <div id="passengerFields"></div>
+        <div class="actions"><p>Passenger details stay in this tab until you submit a booking.</p><button id="chooseSeats" class="button" type="submit" disabled>Choose your seats <span>→</span></button></div>
+      </section>
+    </form>
+    <section id="seatStep" class="panel" aria-labelledby="seatHeading" hidden>
+      <div class="section-heading"><span class="chapter">02</span><div><p class="eyebrow">FIND YOUR PLACE</p><h2 id="seatHeading" tabindex="-1">A seat for everyone.</h2></div></div>
+      <div class="seat-layout"><div class="coach"><div class="coach-front"><span>FRONT OF COACH</span><span aria-label="Driver">◉</span></div><div class="seat-columns" aria-hidden="true"><span>A</span><span>B</span><span class="aisle"></span><span>C</span><span>D</span></div><div id="seatMap" class="seat-map" role="group" aria-label="60 seats, 15 rows of 2 plus 2 with a centre aisle"></div><p class="coach-rear">REAR OF COACH</p></div><aside class="seat-summary"><p class="eyebrow">YOUR GROUP</p><h3 id="selectionCount" aria-live="polite">0 seats selected</h3><p id="seatMode"></p><div class="legend"><span><i></i>Available</span><span><i class="selected"></i>Selected</span><span><i class="unavailable"></i>Unavailable</span></div><ol id="assignments"></ol><p class="hint">Seats are assigned in selection order. Select a chosen seat again to remove it.</p><p id="fareSummary"></p></aside></div>
+      <div class="actions"><button id="backPassengers" class="text-button" type="button">← Passenger details</button><button id="reviewButton" class="button" type="button" disabled>Review your journey →</button></div>
+    </section>
+    <section id="reviewStep" class="panel" aria-labelledby="reviewHeading" hidden>
+      <div class="section-heading"><span class="chapter">03</span><div><p class="eyebrow">READY FOR THE JOURNEY</p><h2 id="reviewHeading" tabindex="-1">Every passenger. Their own ticket.</h2></div></div>
+      <p id="reviewJourney" class="journey-summary"></p><p id="ticketNotice" class="notice"></p>
+      <div id="tickets" class="tickets"></div>
+      <div id="paymentSelection" hidden><label>Payment provider<select id="provider"></select></label><p class="hint">The current booking provider creates one booking and payment link per passenger. Each payment must be completed separately.</p></div>
+      <p id="submissionStatus" role="status" aria-live="polite"></p>
+      <div class="actions review-actions"><button id="backSeats" class="text-button" type="button">← Change seats</button><div><button id="printTickets" class="outline-button" type="button">Print / save PDF</button><button id="submitBooking" class="button" type="button" hidden>Create passenger bookings →</button><a id="teamBooking" class="button" href="https://wa.me/263777955373" target="_blank" rel="noopener" hidden>Book with our team ↗</a></div></div>
+    </section>
+    <p class="booking-help">Need a hand? <a href="https://wa.me/263777955373" target="_blank" rel="noopener">WhatsApp Zimbabwe</a> · <a href="https://wa.me/27746412345" target="_blank" rel="noopener">WhatsApp South Africa</a></p>
+  </main>
+  <footer><span>LAZARUS LUXURY COACHES</span><span>Your journey. Our commitment.</span></footer>
+</body></html>
