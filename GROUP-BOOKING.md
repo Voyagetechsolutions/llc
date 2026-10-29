@@ -21,6 +21,9 @@ available for compatibility.
    browser print dialog and keeps each passenger card together. **Download ticket
    PDF** saves one passenger directly, while **Download all tickets (PDF)** saves
    one PDF with a separate page for every passenger, without a print dialog.
+   PDFs use an **80 mm receipt-style bus ticket**, typically 80 × 170 mm. Each
+   passenger remains on one page; longer names/details extend the ticket height
+   rather than changing to A4 or splitting the QR onto a second sheet.
 
 ## Departure and check-in times
 
@@ -103,3 +106,7 @@ Direct browser downloads were verified for a three-page group PDF and a one-page
 individual PDF. Extracted text and rendered pages show the correct passenger,
 route, travel date, check-in/departure times, seat and preview status. Tests cover
 different departure times, previous-day check-in, unknown origins and safe filenames.
+
+Compact-format verification: three generated tickets each measured 80 × 170 mm.
+Names and route-specific times survived text extraction, all three QR codes decoded
+from rendered PDF pages, and the rendered layout was reviewed for clipping.
