@@ -18,7 +18,34 @@ available for compatibility.
    provider layouts are blocked rather than silently remapped.
 3. Review one separate QR-coded record per passenger, then create bookings or
    contact the team if online service is unavailable. Print / save PDF uses the
-   browser print dialog and keeps each passenger card together.
+   browser print dialog and keeps each passenger card together. **Download ticket
+   PDF** saves one passenger directly, while **Download all tickets (PDF)** saves
+   one PDF with a separate page for every passenger, without a print dialog.
+
+## Departure and check-in times
+
+The selected published trip's `departureAt` is authoritative for online bookings.
+The operator confirmed these check-in offsets on 2026-10-29:
+
+- Johannesburg origin: 60 minutes before departure.
+- Bulawayo origin: 30 minutes before departure.
+
+`public/booking-schedule.js` calculates check-in from that timestamp and displays
+both dates if check-in falls on the previous day. Times use the trip branch's
+time zone, falling back to Africa/Johannesburg or Africa/Harare for the known
+origins. An unknown origin does not inherit a guessed check-in policy.
+
+Offline previews use the existing advertised 17:00 daily departure (16:00
+Johannesburg check-in or 16:30 Bulawayo check-in), labelled as planning information.
+They do not override live departures or confirm service availability.
+
+PDF generation is lazy-loaded from the locally vendored jsPDF 4.2.1 build (MIT);
+passenger data stays in the browser. Names outside PDF core font coverage use
+browser-font rasterization so Unicode names are preserved. The QR is embedded
+as a lossless image with a four-module quiet zone. Preview/payment-pending status
+is retained on every downloaded page. Downloads do not turn a pending record into
+a valid boarding ticket. Refresh vendors after a dependency update using
+`npm run assets:booking`.
 
 The missing-config/offline path collects a requested route/date and preferred
 seats for a **preview**, not live inventory. It never creates reservations.
@@ -63,7 +90,7 @@ partial-failure idempotence, expired holds/conflicts and independently decoded Q
 codes. Existing single-passenger and cinematic experience checks remain intact.
 Browser smoke verification uses mocked provider data; never real bookings.
 
-Verified locally on 2026-10-29: all 22 automated tests passed; three-passenger
+Verified locally on 2026-10-29: all 29 automated tests passed; three-passenger
 offline preview and mocked online booking each rendered three separate QR cards.
 The mocked online flow sent three distinct passenger/seat payloads with the same
 primary customer contact, blocked sold seat 60, and displayed three checkout links.
@@ -71,3 +98,8 @@ At 1440px desktop and 390px mobile widths, no horizontal overflow was observed.
 Print media hides the form and seat-selection controls. Live payment, production
 inventory and provider-issued boarding ticket validation were not tested because
 the local environment has no configured VTTS connection.
+
+Direct browser downloads were verified for a three-page group PDF and a one-page
+individual PDF. Extracted text and rendered pages show the correct passenger,
+route, travel date, check-in/departure times, seat and preview status. Tests cover
+different departure times, previous-day check-in, unknown origins and safe filenames.

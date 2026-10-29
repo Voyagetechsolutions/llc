@@ -1,5 +1,6 @@
 import qrcode from './assets/vendor/qrcode/qrcode.mjs';
 import { seatLayout, validatePassengers, mapAvailability, safeCheckoutUrl, ticketPayload, GroupBooking } from './booking-core.js';
+import { ticketSchedule } from './booking-schedule.js';
 const $ = id => document.getElementById(id);
 const state = { config: null, catalog: null, trip: null, live: false, passengers: [], selected: [], available: new Map(), records: [], group: null, contact: null, busy: false };
 const steps = ['passengerStep', 'seatStep', 'reviewStep'];
@@ -155,7 +156,9 @@ $('reviewButton').addEventListener('click', () => {
 });
 function detail(list, title, value) { const wrapper = node('div'); wrapper.append(node('dt',title), node('dd',value)); list.append(wrapper); }
 function renderTickets() {
+  const schedule = ticketSchedule(state.trip);
   $('tickets').replaceChildren(...state.records.map((record, i) => {
+    record.passengerIndex = i;
     const result = record.result;
     const reference = result?.booking?.reference;
     const ticket = node('article', undefined, 'ticket'); ticket.setAttribute('aria-label', `Passenger ${i + 1}: ${nameOf(record.passenger)}`);
@@ -165,7 +168,10 @@ function renderTickets() {
     detail(dl,'Passenger',i === 0 ? 'Primary passenger' : `Passenger ${i + 1}`);
     detail(dl,'Seat',String(typeof record.seat === 'number' ? record.seat : record.seat.code));
     detail(dl,'Route',state.trip.preview ? state.trip.route : `${state.trip.route.origin} → ${state.trip.route.destination}`);
-    detail(dl,state.trip.preview ? 'Requested date' : 'Departure', state.trip.preview ? state.trip.date : departure(state.trip));
+    detail(dl,state.trip.preview ? 'Requested travel date' : 'Travel date', schedule.date);
+    detail(dl,'Check-in time', `${schedule.checkIn}${schedule.checkInDate && schedule.checkInDate !== schedule.date ? ` · ${schedule.checkInDate}` : ''}`);
+    detail(dl,'Departure time', schedule.departure);
+    detail(dl,'Local time zone',schedule.timeZone);
     detail(dl,reference ? 'Booking reference' : 'Status', reference || 'Preview · not reserved');
     detail(dl,'Contact',state.contact.phone);
     if (record.passenger.idNumber) detail(dl,'Passport / ID', `••••${record.passenger.idNumber.slice(-4)}`);
@@ -179,9 +185,19 @@ function renderTickets() {
     qrPanel.append(node('small', reference || `Preview ${record.id.slice(0,8)}`));
     body.append(information,qrPanel);
     ticket.append(head,body,node('div',reference ? 'Booking created · Payment / ticket confirmation must be checked with the booking provider. This QR identifies the booking; it is not a validated boarding pass.' : 'PREVIEW ONLY · Not a confirmed ticket. No seat has been reserved.','ticket-foot'));
+    const download = node('button','Download ticket PDF ↓','outline-button ticket-download'); download.type='button';
+    download.setAttribute('aria-label',`Download ticket PDF for ${nameOf(record.passenger)}`);
+    download.addEventListener('click',()=>saveTicketFiles(download,[record])); ticket.append(download);
     return ticket;
   }));
 }
+async function saveTicketFiles(button,records) {
+  const label=button.textContent;button.disabled=true;button.textContent='Preparing PDF…';error();
+  try { const {downloadTickets}=await import('./ticket-download.js');await downloadTickets(records,state.trip,state.contact); }
+  catch(e) { error(`Ticket download failed. ${e.message} You can also use Print / save PDF.`); }
+  finally {button.disabled=false;button.textContent=label;}
+}
+$('downloadTickets').addEventListener('click',()=>saveTicketFiles($('downloadTickets'),state.records));
 $('printTickets').addEventListener('click', () => window.print());
 $('submitBooking').addEventListener('click', async () => {
   if (state.busy || !state.live) return;
@@ -198,7 +214,7 @@ $('submitBooking').addEventListener('click', async () => {
     await state.group.submit(ttl, () => { renderTickets(); $('submissionStatus').textContent=`${state.records.filter(r=>r.result).length} of ${state.records.length} passenger bookings created.`; });
     $('submitBooking').hidden=true;
     $('ticketNotice').textContent='Passenger booking records created. Complete each payment link below. The booking provider must confirm payment and issue your final boarding tickets.';
-    $('submissionStatus').textContent=`All ${state.records.length} passenger booking records created. Print or save this page before closing it.`;
+    $('submissionStatus').textContent=`All ${state.records.length} passenger booking records created. Download your PDFs before closing this page.`;
   } catch(e) {
     renderTickets();
     const created = state.records.filter(r=>r.result).length;

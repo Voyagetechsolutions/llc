@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "assets:vendor": "node scripts/vendor-three.js",
+    "assets:booking": "node scripts/vendor-booking.js",
     "test": "node --test"
   },
   "engines": {
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "express": "^4.21.0",
+    "jspdf": "4.2.1",
     "qrcode-generator": "2.0.4",
     "three": "^0.186.1"
   },
