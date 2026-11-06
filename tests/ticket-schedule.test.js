@@ -7,13 +7,13 @@ test('Johannesburg check-in is 60 minutes before the selected departure',()=>{
   const schedule=ticketSchedule(trip('Johannesburg'));
   assert.equal(schedule.departure,'17:00');assert.equal(schedule.checkIn,'16:00');assert.equal(schedule.date,'15 Dec 2026');assert.equal(schedule.minutes,60);
 });
-test('Bulawayo check-in is 30 minutes before the selected departure',()=>{
-  const schedule=ticketSchedule(trip('Bulawayo'));
-  assert.equal(schedule.departure,'17:00');assert.equal(schedule.checkIn,'16:30');assert.equal(schedule.timeZone,'Africa/Harare');
+test('Bulawayo check-in is 45 minutes before the selected departure',()=>{
+  const schedule=ticketSchedule({...trip('Bulawayo'),departureAt:'2026-12-15T14:00:00Z'});
+  assert.equal(schedule.departure,'16:00');assert.equal(schedule.checkIn,'15:15');assert.equal(schedule.timeZone,'Africa/Harare');
 });
 test('uses actual trip time rather than hardcoding every ticket to 17:00',()=>{
   const schedule=ticketSchedule({...trip('Bulawayo'),departureAt:'2026-12-15T12:15:00Z'});
-  assert.equal(schedule.departure,'14:15');assert.equal(schedule.checkIn,'13:45');
+  assert.equal(schedule.departure,'14:15');assert.equal(schedule.checkIn,'13:30');
 });
 test('check-in can fall on the previous date',()=>{
   const schedule=ticketSchedule({...trip('Johannesburg'),departureAt:'2026-12-14T22:15:00Z'});
@@ -27,7 +27,7 @@ test('unknown origin never guesses a check-in offset and invalid times remain un
 test('offline previews use the advertised daily schedule and route-specific offsets',()=>{
   const jhb=ticketSchedule({preview:true,route:'Johannesburg → Bulawayo',date:'2026-12-15'});
   const byo=ticketSchedule({preview:true,route:'Bulawayo → Johannesburg',date:'2026-12-15'});
-  assert.equal(jhb.checkIn,'16:00');assert.equal(byo.checkIn,'16:30');assert.equal(jhb.departure,'17:00');assert.equal(jhb.preview,true);
+  assert.equal(jhb.checkIn,'16:00');assert.equal(byo.checkIn,'15:15');assert.equal(byo.departure,'16:00');assert.equal(jhb.departure,'17:00');assert.equal(jhb.preview,true);
 });
 test('download filenames distinguish previews, records and group PDFs safely',()=>{
   const preview={seat:3,id:'12345678-0000'};

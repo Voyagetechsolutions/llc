@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>PayFast Sandbox | Lazarus Luxury Coaches</title>
+  <link rel="stylesheet" href="/booking.css">
+</head>
+<body>
+  <header>
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="">Lazarus Luxury Coaches</a>
+    <a class="back-home" href="/booking.html">Back to booking</a>
+  </header>
+  <main>
+    <section class="panel" aria-labelledby="sandbox-title">
+      <p class="eyebrow">PAYMENT TEST</p>
+      <h1 id="sandbox-title">PayFast Sandbox</h1>
+      <p class="notice">Use the PayFast test wallet. This demo uses a sample fare of R600.00 and does not reserve a seat or issue a boarding ticket.</p>
+      <dl>
+        <dt>Sample route</dt><dd>Bulawayo to Johannesburg</dd>
+        <dt>Test fare</dt><dd>R600.00</dd>
+      </dl>
+      <form method="post" action="https://sandbox.payfast.co.za/eng/process">
+        <!-- Public test merchant credentials from the PayFast developer documentation. -->
+        <input type="hidden" name="merchant_id" value="10000100">
+        <input type="hidden" name="merchant_key" value="46f0cd694581a">
+        <input type="hidden" name="amount" value="600.00">
+        <input type="hidden" name="item_name" value="Lazarus sample coach fare">
+        <button class="button" type="submit">Open PayFast Sandbox checkout</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

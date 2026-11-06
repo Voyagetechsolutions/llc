@@ -68,12 +68,7 @@ async function harness(options = {}) {
     calls.push({ url, init, body: init.body ? JSON.parse(init.body) : null });
     let body;
     if (url === "/api/config")
-      body = options.offline
-        ? { vttsApiUrl: null, channelKey: null }
-        : {
-            vttsApiUrl: "https://vtts.test/api/v1",
-            channelKey: "test-publishable",
-          };
+      body = { bookingEnabled: !options.offline };
     else if (url.endsWith("/catalog"))
       body = options.empty ? { ...catalog, trips: [] } : catalog;
     else if (url.endsWith("/availability"))

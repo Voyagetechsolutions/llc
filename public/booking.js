@@ -1,6 +1,6 @@
 import qrcode from './assets/vendor/qrcode/qrcode.mjs';
 import { seatLayout, validatePassengers, mapAvailability, safeCheckoutUrl, ticketPayload, GroupBooking } from './booking-core.js';
-import { ticketSchedule } from './booking-schedule.js';
+import { ticketRoute, ticketSchedule } from './booking-schedule.js';
 const $ = id => document.getElementById(id);
 const state = { config: null, catalog: null, trip: null, live: false, passengers: [], selected: [], available: new Map(), records: [], group: null, contact: null, busy: false };
 const steps = ['passengerStep', 'seatStep', 'reviewStep'];
@@ -20,8 +20,8 @@ function showStep(index) {
   document.querySelector('.steps').scrollIntoView({ block:'start', behavior:'instant' });
 }
 async function api(path, init = {}) {
-  const response = await fetch(`${state.config.vttsApiUrl.replace(/\/+$/, '')}/channel-api/v1${path}`, {
-    ...init, headers: { 'x-vtts-channel-key': state.config.channelKey, ...(init.body ? { 'content-type': 'application/json' } : {}) },
+  const response = await fetch(`/api/booking${path}`, {
+    ...init, headers: { ...(init.body ? { 'content-type': 'application/json' } : {}) },
   });
   const body = await response.json();
   if (!response.ok) {
@@ -71,7 +71,7 @@ async function init() {
     const response = await fetch('/api/config', { cache:'no-store' });
     if (!response.ok) throw new Error('Connection unavailable.');
     state.config = await response.json();
-    if (!state.config.vttsApiUrl || !state.config.channelKey) return offline('Online booking is currently unavailable.');
+    if (!state.config.bookingEnabled) return offline('Online booking is currently unavailable.');
     state.catalog = await api('/catalog');
     if (!state.catalog.trips?.length) return offline('No published departures are currently on sale.');
     state.live = true;
@@ -157,20 +157,34 @@ $('reviewButton').addEventListener('click', () => {
 function detail(list, title, value) { const wrapper = node('div'); wrapper.append(node('dt',title), node('dd',value)); list.append(wrapper); }
 function renderTickets() {
   const schedule = ticketSchedule(state.trip);
+  const { origin, destination } = ticketRoute(state.trip);
   $('tickets').replaceChildren(...state.records.map((record, i) => {
     record.passengerIndex = i;
     const result = record.result;
     const reference = result?.booking?.reference;
     const ticket = node('article', undefined, 'ticket'); ticket.setAttribute('aria-label', `Passenger ${i + 1}: ${nameOf(record.passenger)}`);
     const head = node('div',undefined,'ticket-head'); head.append(node('span','LAZARUS LUXURY COACHES'),node('span',`${reference ? 'BOOKING RECORD' : 'TICKET PREVIEW'} · ${i + 1} / ${state.records.length}`));
+    const route = node('div', undefined, 'ticket-route');
+    const line = node('div', undefined, 'ticket-route-line');
+    line.setAttribute('aria-hidden', 'true');
+    const logo = node('img'); logo.src = '/assets/logo.png'; logo.alt = '';
+    line.append(node('span'), logo, node('span'));
+    const stops = node('div', undefined, 'ticket-route-stops');
+    for (const stop of [origin, destination]) {
+      const endpoint = node('div');
+      endpoint.append(node('strong', stop.city));
+      if (stop.country) endpoint.append(node('small', stop.country));
+      stops.append(endpoint);
+    }
+    route.append(line, stops);
     const body = node('div',undefined,'ticket-body'); const information = node('div'); information.append(node('h3',nameOf(record.passenger)));
     const dl = node('dl');
     detail(dl,'Passenger',i === 0 ? 'Primary passenger' : `Passenger ${i + 1}`);
     detail(dl,'Seat',String(typeof record.seat === 'number' ? record.seat : record.seat.code));
-    detail(dl,'Route',state.trip.preview ? state.trip.route : `${state.trip.route.origin} → ${state.trip.route.destination}`);
     detail(dl,state.trip.preview ? 'Requested travel date' : 'Travel date', schedule.date);
     detail(dl,'Check-in time', `${schedule.checkIn}${schedule.checkInDate && schedule.checkInDate !== schedule.date ? ` · ${schedule.checkInDate}` : ''}`);
     detail(dl,'Departure time', schedule.departure);
+    detail(dl,'Check-in location', origin.boardingPoint || 'Confirm with the booking provider');
     detail(dl,'Local time zone',schedule.timeZone);
     detail(dl,reference ? 'Booking reference' : 'Status', reference || 'Preview · not reserved');
     detail(dl,'Contact',state.contact.phone);
@@ -179,12 +193,33 @@ function renderTickets() {
     information.append(dl);
     const checkout = safeCheckoutUrl(result?.checkoutUrl);
     if (checkout) { const pay = node('a',`Pay for ${record.passenger.firstName} ↗`,'outline-button'); pay.href=checkout; pay.target='_blank'; pay.rel='noopener'; information.append(pay); }
+    if (reference) {
+      const status = node('p', 'Awaiting payment confirmation.');
+      status.setAttribute('role', 'status');
+      const refresh = node('button', 'Check payment status', 'outline-button');
+      refresh.type = 'button';
+      refresh.addEventListener('click', async () => {
+        refresh.disabled = true;
+        try {
+          const booking = await api('/bookings/' + encodeURIComponent(reference));
+          status.textContent = booking.status === 'CONFIRMED'
+            ? 'Confirmed. VTTS ticket ' + booking.tickets.map(ticket => ticket.ticketNumber).join(', ')
+            : 'Booking status: ' + booking.status.toLowerCase().replaceAll('_', ' ');
+        } catch (err) {
+          status.textContent = err.message;
+        } finally {
+          refresh.disabled = false;
+        }
+      });
+      information.append(status, refresh);
+    }
     const qrPanel = node('div',undefined,'ticket-qr'); const qr = qrcode(0,'M'); qr.addData(ticketPayload(record.id,reference)); qr.make();
     // Generated SVG comes exclusively from the local QR library, never user HTML.
     qrPanel.innerHTML=qr.createSvgTag(4,16); const svg=qrPanel.querySelector('svg'); svg.setAttribute('role','img'); svg.setAttribute('aria-label',`QR ${reference ? 'booking reference' : 'preview identifier'} for passenger ${i+1}`);
+    qrPanel.prepend(node('strong', reference ? 'Check-in lookup QR' : 'Sample check-in QR'));
     qrPanel.append(node('small', reference || `Preview ${record.id.slice(0,8)}`));
     body.append(information,qrPanel);
-    ticket.append(head,body,node('div',reference ? 'Booking created · Payment / ticket confirmation must be checked with the booking provider. This QR identifies the booking; it is not a validated boarding pass.' : 'PREVIEW ONLY · Not a confirmed ticket. No seat has been reserved.','ticket-foot'));
+    ticket.append(head,route,body,node('div',reference ? 'Booking created · Payment / ticket confirmation must be checked with the booking provider. This QR identifies the booking; it is not a validated boarding pass.' : 'PREVIEW ONLY · Not a confirmed ticket. No seat has been reserved.','ticket-foot'));
     const download = node('button','Download ticket PDF ↓','outline-button ticket-download'); download.type='button';
     download.setAttribute('aria-label',`Download ticket PDF for ${nameOf(record.passenger)}`);
     download.addEventListener('click',()=>saveTicketFiles(download,[record])); ticket.append(download);

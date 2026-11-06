@@ -31,7 +31,7 @@ The selected published trip's `departureAt` is authoritative for online bookings
 The operator confirmed these check-in offsets on 2026-10-29:
 
 - Johannesburg origin: 60 minutes before departure.
-- Bulawayo origin: 30 minutes before departure.
+- Bulawayo origin: 45 minutes before departure.
 
 `public/booking-schedule.js` calculates check-in from that timestamp and displays
 both dates if check-in falls on the previous day. Times use the trip branch's
@@ -39,7 +39,7 @@ time zone, falling back to Africa/Johannesburg or Africa/Harare for the known
 origins. An unknown origin does not inherit a guessed check-in policy.
 
 Offline previews use the existing advertised 17:00 daily departure (16:00
-Johannesburg check-in or 16:30 Bulawayo check-in), labelled as planning information.
+Johannesburg check-in or 15:15 Bulawayo check-in), labelled as planning information.
 They do not override live departures or confirm service availability.
 
 PDF generation is lazy-loaded from the locally vendored jsPDF 4.2.1 build (MIT);

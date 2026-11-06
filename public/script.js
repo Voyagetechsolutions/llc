@@ -89,9 +89,9 @@ const directionOf = (trip) => `${trip.route.origin} → ${trip.route.destination
 const departureOf = (trip) => when(trip.departureAt, trip.branch?.timezone);
 
 async function vtts(path, init = {}) {
-  const headers = { "x-vtts-channel-key": booking.config.channelKey };
+  const headers = {};
   if (init.body) headers["content-type"] = "application/json";
-  const res = await fetch(`${booking.config.vttsApiUrl}/channel-api/v1${path}`, { ...init, headers });
+  const res = await fetch(`/api/booking${path}`, { ...init, headers });
   const body = await res.json().catch(() => null);
   if (!res.ok) {
     const issues = Array.isArray(body?.issues) ? body.issues.map((issue) => issue.message).filter(Boolean) : [];
@@ -126,7 +126,7 @@ async function initBooking() {
   } catch {
     return showUnavailable("could not load /api/config from the website server");
   }
-  if (!booking.config.vttsApiUrl || !booking.config.channelKey) {
+  if (!booking.config.bookingEnabled) {
     return showUnavailable("VTTS_API_URL and VTTS_CHANNEL_KEY are not both set on the website host");
   }
   await loadCatalog();

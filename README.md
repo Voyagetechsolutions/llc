@@ -53,20 +53,20 @@ Then set these on the website host:
 
 | Variable | Example | Purpose |
 | --- | --- | --- |
-| `VTTS_API_URL` | `https://dvfyf668filek.cloudfront.net/api/v1` | VTTS API base, including `/api/v1` |
+| `VTTS_API_URL` | `https://vtts-demo.onrender.com/api/v1` | VTTS API base, including `/api/v1` |
 | `VTTS_CHANNEL_KEY` | `ch_…` | The publishable website credential |
 | `PORT` | `8765` | Local port; hosts usually set this |
 
-A publishable key is meant to reach the browser: VTTS accepts it only from the
-allowed origins, and it can only read the published catalog and create holds and
-bookings. It is set per environment rather than committed so it can be rotated
-or revoked without a code change.
+The website server forwards booking requests to VTTS with the publishable key.
+Set `WEBSITE_ORIGIN` to the exact deployed website origin and add that origin to
+the credential in VTTS. Local development uses `http://localhost:8765`. Keep
+configuration in the environment so the key can be rotated independently.
 
 ## Run it locally
 
 ```powershell
 npm install
-$env:VTTS_API_URL = "https://dvfyf668filek.cloudfront.net/api/v1"
+$env:VTTS_API_URL = "https://vtts-demo.onrender.com/api/v1"
 $env:VTTS_CHANNEL_KEY = "ch_your_publishable_key"
 npm start
 ```
@@ -92,7 +92,8 @@ domain at the site.
 
 - Departures daily at **17:00**, check-in **16:00** (per the official LLC flyer)
 - Fares: JHB → BYO **R800** · BYO → JHB **R600**
-- JHB departure point: Power House · BYO: Watering Hole Yard, G Silundika St
+- JHB departure point: Power House · BYO departure point: Norvaal House, Shop 8, corner of 6th Avenue and Fife Street
+- BYO drop-off: Watering Hole Yard, G Silundika St
 - Booking office: 1st Floor Norval House, Shop 15, Cnr Fife St & 6th Ave, Bulawayo
 - Phones: ZW +263 777 955 373 · SA +27 74 641 2345
 

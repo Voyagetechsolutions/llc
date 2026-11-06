@@ -3,3 +3,28 @@
 @media print{@page{margin:12mm}body{background:white;color:#000}header,.page-intro,.steps,#connectionStatus,#error,#passengerStep,#seatStep,.actions,.booking-help,footer,#paymentSelection,.skip{display:none!important}main{padding:0;max-width:none}#reviewStep{border:0;padding:0;margin:0}.section-heading{display:none}.ticket{break-inside:avoid;border-color:#777}.ticket-head{background:white;color:black;border-bottom:2px solid black}.ticket-qr svg{width:140px}.ticket-body{grid-template-columns:1fr 165px}.ticket .outline-button{display:none}.ticket-foot{background:white;color:black;font-weight:600}.notice{background:white}a{text-decoration:none}.tickets{gap:15mm}}
 .ticket-download{margin:0 22px 20px}.review-actions>div{justify-content:flex-end} @media(max-width:700px){.ticket-download{width:calc(100% - 40px);margin:0 20px 20px}} @media print{.ticket-download{display:none!important}}
 @media screen{.tickets{grid-template-columns:repeat(auto-fit,minmax(255px,1fr));align-items:start}.ticket{width:100%;max-width:350px;justify-self:center}.ticket-head{padding:16px;font-size:8px;letter-spacing:.04em}.ticket-body{grid-template-columns:1fr;padding:20px}.ticket h3{font-size:24px}.ticket dl{gap:16px}.ticket-qr{border-left:0;border-top:1px dashed var(--line);padding:18px 0 0}.ticket-foot{padding:14px 20px}.ticket .outline-button{font-size:11px}.ticket dd{font-size:12px}}
+
+.ticket-route {
+  padding: 4px 20px 18px;
+  background: #16231b;
+  color: #fff;
+  print-color-adjust: exact;
+}
+.ticket-route-line { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.ticket-route-line img { width: 36px; height: 36px; object-fit: contain; }
+.ticket-route-line span { flex: 1; border-top: 2px dashed #957743; position: relative; }
+.ticket-route-line span::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cba451;
+}
+.ticket-route-line span:last-child::after { right: 0; }
+.ticket-route-stops { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ticket-route-stops > :last-child { text-align: right; }
+.ticket-route-stops strong { font: 600 clamp(16px, 3vw, 22px) Georgia, serif; overflow-wrap: anywhere; }
+.ticket-route-stops small { display: block; color: #e8be70; letter-spacing: .1em; text-transform: uppercase; }
+.ticket-qr strong { display: block; font-size: 12px; }
