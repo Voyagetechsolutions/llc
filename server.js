@@ -24,7 +24,7 @@ app.get("/api/config", (req, res) => {
 });
 
 app.use("/api/booking", express.json({ limit: "16kb" }), async (req, res) => {
-  const readable = /^\/(?:catalog|trips\/[a-f0-9-]{36}\/availability|bookings\/BK-[a-z0-9-]{3,57})$/i;
+  const readable = /^\/(?:catalog|trips\/[a-f0-9-]{36}\/availability|bookings\/(?:BK|LLC)-[a-z0-9-]{3,57})$/i;
   const writable = /^\/(?:seat-holds|bookings)$/;
   if (!bookingEnabled) return res.status(503).json({ message: "Online booking is unavailable." });
   if (!(req.method === "GET" && readable.test(req.path)) &&
